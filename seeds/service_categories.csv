@@ -1,0 +1,7 @@
+product_code,service_category,is_shared_platform
+AmazonEC2,compute,false
+AWSLambda,compute,false
+AmazonRDS,database,false
+AmazonS3,storage,false
+AmazonAthena,analytics,false
+AWSDataTransfer,networking,true

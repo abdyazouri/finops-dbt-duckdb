@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: stg_billing_line_items
+    description: Typed, de-duplicated billing line items (one row per line_item_id).
+    columns:
+      - name: line_item_id
+        data_tests: [unique, not_null]
+      - name: usage_date
+        data_tests: [not_null]
+      - name: product_code
+        data_tests: [not_null]
+      - name: unblended_cost
+        data_tests: [not_null]
+      - name: line_item_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Usage', 'Credit']
+
+  - name: stg_raw_duplicate_report
+    description: Per-day count of duplicate line items in the raw export (source observability).

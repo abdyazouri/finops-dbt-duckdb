@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  dbt-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Generate synthetic billing data
+        run: python scripts/generate_billing_data.py --days 90
+      - name: dbt build (seed + models + tests)
+        run: dbt build --profiles-dir .
+      - name: Anomaly detector vs injected ground truth
+        run: python scripts/evaluate_anomalies.py

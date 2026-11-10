@@ -1,0 +1,29 @@
+name: finops_dbt
+version: "1.0.0"
+config-version: 2
+profile: finops_dbt
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+
+vars:
+  # Incremental lookback: re-process the last N days on every run so that
+  # late-arriving / corrected line items are picked up (billing exports restate).
+  lookback_days: 3
+  # Robust z-score threshold for anomaly flags (modified z-score, Iglewicz & Hoaglin).
+  anomaly_threshold: 3.5
+  anomaly_window_days: 28
+
+models:
+  finops_dbt:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
+
+seeds:
+  finops_dbt:
+    +column_types:
+      product_code: varchar

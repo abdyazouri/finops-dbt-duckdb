@@ -1,0 +1,7 @@
+finops_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: finops.duckdb
+      threads: 4

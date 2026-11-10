@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: dim_date
+    columns:
+      - name: date_day
+        data_tests: [unique, not_null]
+
+  - name: dim_service
+    columns:
+      - name: product_code
+        data_tests: [unique, not_null]
+      - name: service_category
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['compute', 'database', 'storage', 'analytics', 'networking', 'uncategorized']
+
+  - name: fct_daily_cost
+    description: Daily cost by account, service and team. Incremental with a lookback window.
+    columns:
+      - name: cost_key
+        data_tests: [unique, not_null]
+      - name: usage_date
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_day
+      - name: product_code
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_service')
+                field: product_code
+      - name: line_item_count
+        data_tests:
+          - is_positive
+
+  - name: mart_cost_anomalies
+    description: Trend-adjusted robust z-score per service and day; upward spikes are flagged.
+    columns:
+      - name: usage_date
+        data_tests: [not_null]
+      - name: is_anomaly
+        data_tests: [not_null]
+
+  - name: mart_month_end_projection
+    description: Transparent run-rate baseline for month-end cost per service.
+    columns:
+      - name: projected_month_end_cost
+        data_tests: [not_null]

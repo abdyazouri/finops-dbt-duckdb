@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: raw
+    description: >
+      SYNTHETIC CUR-like billing export produced by scripts/generate_billing_data.py.
+      In a real setup this would be the AWS Cost and Usage Report landed in object storage.
+    meta:
+      external_location: "read_csv('data/raw/{name}.csv', header=true, auto_detect=true)"
+    tables:
+      - name: billing_line_items
+        description: One row per billing line item per day (may contain exact duplicates).
